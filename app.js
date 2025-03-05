@@ -14,7 +14,7 @@ app.use(express.json()); // Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 
 // Mount the courseRouter and authRouter at the base API path
-app.use(`${api}`,  courseRouter)      
+app.use(`${api}`,  courseRouter)         
 app.use(`${api}`,  authRouter)   
 app.use(`${api}` , uploadRouter)                 
 

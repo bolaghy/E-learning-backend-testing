@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "test": "jest --watchAll",
     "start": "nodemon app.js"
   },
   "keywords": [],
@@ -24,8 +25,14 @@
     "nodemailer": "^6.10.0",
     "react-router-dom": "^7.1.5"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
   }
 }

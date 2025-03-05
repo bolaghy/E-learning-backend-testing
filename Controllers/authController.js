@@ -95,7 +95,7 @@ const login = async (req, res) => {
       return res.status(400).json({ success: false, message: "Wrong Email or Password" });
     }
 
-    const passwordMatch = await user.comparePassword(password);
+    const passwordMatch = await user.comparePassword(password);      
     if (!passwordMatch) {
       return res.status(400).json({ success: false, message: "Wrong Email or Password" });
     }
@@ -121,4 +121,73 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login, confirmEmail };
+
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+  }
+
+}                          
+//   try {
+//       // Validate and parse query parameters
+//       const page = parseInt(req.query.page) || 1;
+//       const limit = parseInt(req.query.limit) || 10;
+
+//       if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+//           return res.status(400).json({ 
+//               success: false, 
+//               message: "Invalid page or limit value" 
+//           });
+//       }
+
+//       const skip = (page - 1) * limit;          
+
+//       // Debugging: Log query parameters
+//       console.log("Fetching users with pagination - Page:", page, "Limit:", limit);
+
+//       // Fetch users with pagination
+//       const users = await User.find()
+//           .select('-password')
+//           .skip(skip)
+//           .limit(limit);
+
+//       // Debugging: Log fetched users
+//       console.log("Users fetched:", users);
+
+//       // Get the total number of users for pagination metadata
+//       const totalUsers = await User.countDocuments();
+
+//       // If no users are found, return a 404 response
+//       if (!users || users.length === 0) {
+//           return res.status(404).json({ 
+//               success: false, 
+//               message: "No users found" 
+//           });
+//       }
+
+//       // Return the list of users with pagination metadata
+//       res.status(200).json({ 
+//           success: true, 
+//           message: "Users retrieved successfully", 
+//           data: users,
+//           pagination: {
+//               totalUsers,
+//               currentPage: page,
+//               totalPages: Math.ceil(totalUsers / limit)
+//           }
+//       });
+//   } catch (error) {
+//       console.error("Error fetching users:", error);
+//       res.status(500).json({ 
+//           success: false, 
+//           message: "Internal server error", 
+//           error: error.message 
+//       });
+//   }
+// };
+
+module.exports = { register, login, confirmEmail,getAllUsers };

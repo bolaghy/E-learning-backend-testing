@@ -1,8 +1,7 @@
 const Joi = require('joi');
 
 
-// const validateUser = (schema) =>(payload) =>
-//     schema.validate(payload, {aboutEarly: false})
+
 
 const userValidationSchema = Joi.object({
     name: Joi.string().required()
@@ -55,10 +54,10 @@ const userValidationSchema = Joi.object({
         }),
 
     role: Joi.string()
-        .valid('instructor', 'student')
+        .valid('instructor', 'student', 'admin')
         .required()
         .messages({
-            'any.only': 'Role must be either "instructor or "student"',
+            'any.only': 'Role must be either "instructor or "student" or "admin"',
             'any.required': 'Role is required'
         })
 });
@@ -88,6 +87,37 @@ const validateUser = (data) => {
 
 const validateLogin = (data) => {
     return loginValidationSchema.validate(data, { abortEarly: false });
+}
+// Validation schema for a single lesson
+const lessonSchema = Joi.object({
+    title: Joi.string().required().trim(),
+    content: Joi.string().required(),
+    videoUrl: Joi.string().required(),
+    duration: Joi.number().required().min(1), // Duration must be at least 1 minute
+    resources: Joi.array().items(Joi.string().trim()).optional()
+});
+// Validation schema for a single quiz
+const quizSchema = Joi.object({
+    question: Joi.string().required().trim(),
+    options: Joi.array().items(Joi.string().trim()).min(2).required(), // At least 2 options
+    correctAnswer: Joi.number().required().min(0) // Index of the correct option (0-based)
+});
+// Main validation schema for the Course model
+const courseValidationSchema = Joi.object({
+    title: Joi.string().required().trim(),
+    description: Joi.string().required(),
+    category: Joi.string().valid('Programming', 'Design', 'Marketing', 'Business', 'Other').required(),
+    instructor: Joi.string().required(), // Assuming instructor ID is a string (ObjectId)
+    price: Joi.number().required().min(0), // Price cannot be negative
+    level: Joi.string().valid('Beginner', 'Intermediate', 'Advanced').required(),
+    lessons: Joi.array().items(lessonSchema).optional(), // Lessons are optional
+    quizzes: Joi.array().items(quizSchema).optional(), // Quizzes are optional
+    studentsEnrolled: Joi.array().items(Joi.string()).optional() // Array of student IDs
+});
+
+// Function to validate the course data
+const validateCourse = (courseData) => {
+    return courseValidationSchema.validate(courseData, { abortEarly: false });
 };
 
-module.exports = { validateUser, validateLogin};
+module.exports = { validateUser, validateLogin, validateCourse};
